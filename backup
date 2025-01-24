@@ -1,0 +1,210 @@
+import numpy as np
+import time
+import math
+from random import seed
+import pandas as pd
+from xlwt import Workbook
+from tempfile import TemporaryFile
+
+#=====================================================================================================================
+#============================================BCH CODE=================================================================
+print("\n================================= BCH CODE ===============================\n")
+start4 = time.time()
+
+# Membaca file Excel menggunakan pandas
+df1 = pd.read_excel("Binar_IP1.xlsx", sheet_name="Sheet1", engine='openpyxl')
+df2 = pd.read_excel("Binar_IP2_5.xlsx", sheet_name="Sheet1", engine='openpyxl')
+
+# Transformasi data ke bentuk biner penuh
+def to_binary_list(data):
+    return [[int(bit) for bit in str(value).zfill(3)] for value in data]  # Assume 3-bit binary numbers
+
+a_raw = df1.iloc[:, 0].tolist()
+b_raw = df2.iloc[:, 0].tolist()
+
+a = [bit for row in to_binary_list(a_raw) for bit in row]
+b = [bit for row in to_binary_list(b_raw) for bit in row]
+
+# Debug data awal
+print("\n=== DEBUG: Data Awal ===")
+print(f"Jumlah data Alice: {len(a)} bit")
+print(f"Jumlah data Bob: {len(b)} bit")
+
+# Menghitung Kuantisasi Error
+errkuan = [i+1 for i in range(len(a)) if a[i] != b[i]]
+kdrkuan = len(errkuan) / len(a)
+print("KDR Kuantisasi ALICE - BOB = %.2f%%" % (kdrkuan * 100))
+print(f"Jumlah error awal: {len(errkuan)}")
+
+# Parameter BCH
+m = 5
+n = 2**m - 1  # panjang codeword
+k = 6         # jumlah bit informasi
+t = 7         # kemampuan koreksi
+maks = math.floor(len(a) / k)
+
+# Debug parameter BCH
+print("\n=== DEBUG: Parameter BCH ===")
+print(f"Jumlah blok: {maks}, Panjang codeword: {n}, Jumlah bit informasi: {k}, Kemampuan koreksi: {t}")
+
+# Pembagian data ke dalam blok
+alice = [a[(k*i):(k*(i+1))] for i in range(int(maks))]
+bob = [b[(k*i):(k*(i+1))] for i in range(int(maks))]
+
+# Debug data blok
+print("\n=== DEBUG: Data Blok ===")
+print(f"Jumlah blok Alice: {len(alice)}, Jumlah blok Bob: {len(bob)}")
+print(f"Contoh blok pertama Alice: {alice[0]}")
+print(f"Contoh blok pertama Bob: {bob[0]}")
+
+# ------------------- GF-ARITHMETIC --------------------
+def gf_add(a, b):
+    prod = ""
+    if len(a) > len(b):
+        b = '0' * (len(a) - len(b)) + b
+    elif len(a) < len(b):
+        a = '0' * (len(b) - len(a)) + a
+    for i in range(len(a)):
+        prod += '1' if a[i] != b[i] else '0'
+    return prod
+
+def gf_mul(a, b):
+    prod = '0' * (len(a) + len(b) - 1)
+    for i in range(len(a)):
+        for j in range(len(b)):
+            if a[i] == '1' and b[j] == '1':
+                tmp = '1'
+            else:
+                tmp = '0'
+            prod = prod[:i+j] + ('1' if prod[i+j] != tmp else '0') + prod[i+j+1:]
+    return prod
+
+def gf_xor(a, b):
+    return ''.join(['1' if a[i] != b[i] else '0' for i in range(len(b))])
+
+def gf_div(a, b, mode=0):
+    pick = len(b)
+    q = ""       # quotient
+    r = a[:pick]  # remainder
+    while pick < len(a):
+        if r[0] == '1':
+            q += '1'
+            r = gf_xor(b, r) + a[pick]
+        else:
+            q += '0'
+            r = gf_xor('0'*pick, r) + a[pick]
+        pick += 1
+    if r[0] == '1':
+        q += '1'
+        r = gf_xor(b, r)
+    else:
+        q += '0'
+        r = gf_xor('0'*pick, r)
+    return r if not mode else q
+
+# ------------------- CODER/DECODER --------------------
+def bch_encode(data, g):
+    return gf_mul(data, g)
+
+def bch_decode(c, g):
+    syndrome = gf_div(c, g)
+    if not weight(syndrome):
+        return c
+    cnt_rot = 0
+    recd = c
+    stp = 0
+    while weight(syndrome) > t:
+        recd = l_rotate(recd)
+        syndrome = gf_div(recd, g)
+        cnt_rot += 1
+        stp += 1
+        if stp > n:
+            break
+    recd = gf_add(recd, syndrome)
+    recd = r_rotate(recd, cnt_rot)
+    return recd
+
+# --------------------- UTILITIES ----------------------
+def l_rotate(poly, s=1):
+    return poly[s:] + poly[:s]
+
+def r_rotate(poly, s=1):
+    return poly[-s:] + poly[:-s]
+
+def weight(poly):
+    return sum([int(coeff) for coeff in poly])
+
+# ------------------------ MAIN ------------------------
+alalice = []
+bobob = []
+deleteblok = 0
+totalerrorbch = []
+
+def main(data, data2, z):
+    global deleteblok
+    seed()
+    g = "11001011011110101000100111"  # BCH (31,6) m=5 k=6 t=7
+    c1 = bch_encode(data, g)
+    c2 = bch_encode(data2, g)
+
+    errcode = sum(1 for i in range(n-k) if c1[i+k] != c2[i+k])
+    totalerrorbch.append(errcode)
+    if errcode <= t:
+        recd1 = gf_div(c1, g, 1)
+        recd2 = gf_div(c2, g, 1)
+        alalice.append(recd1)
+        bobob.append(recd2)
+    else:
+        deleteblok += 1
+
+# Debug setiap blok selama proses
+for i in range(int(maks)):
+    dt1 = ''.join(str(e) for e in alice[i])
+    dt2 = ''.join(str(e) for e in bob[i])
+    print(f"\n=== DEBUG: Blok {i+1} ===")
+    print(f"Data Alice (blok {i+1}): {dt1}")
+    print(f"Data Bob (blok {i+1}): {dt2}")
+    main(dt1, dt2, i+1)
+
+# Gabungkan hasil menjadi bitalice dan bitbob
+alice11 = ''.join(alalice)
+bob11 = ''.join(bobob)
+bitalice = list(map(int, alice11))
+bitbob = list(map(int, bob11))
+
+# Debug hasil setelah BCH
+print("\n=== DEBUG: Data Setelah BCH ===")
+print(f"Jumlah bitalice: {len(bitalice)}")
+print(f"Jumlah bitbob: {len(bitbob)}")
+print(f"Contoh bitalice (50 bit pertama): {bitalice[:50]}")
+print(f"Contoh bitbob (50 bit pertama): {bitbob[:50]}")
+
+# Pastikan panjang bitalice dan bitbob sama
+min_length = min(len(bitalice), len(bitbob))
+bitalice = bitalice[:min_length]
+bitbob = bitbob[:min_length]
+
+# Hitung KDR setelah BCH
+errbch = [i+1 for i in range(len(bitalice)) if bitalice[i] != bitbob[i]]
+kdrbch = len(errbch) / len(bitalice)
+
+print("\n=== DEBUG: Validasi Panjang Data ===")
+print(f"Panjang awal bitalice: {len(bitalice)}")
+print(f"Panjang awal bitbob: {len(bitbob)}")
+print(f"Panjang yang disamakan: {min_length}")
+
+print("\n=== DEBUG: Data Input dari Excel ===")
+print("Contoh data Alice (10 baris pertama):", a[:90])
+print("Contoh data Bob (10 baris pertama):", b[:90])
+
+# Debug hasil akhir
+print("\n=== DEBUG: Hasil Akhir ===")
+print(f"BCH jumlah blok error = {deleteblok}, Jumlah blok dikoreksi = {maks - deleteblok}")
+print(f"KDR Setelah BCH: {kdrbch:.6f}")
+print(f"Jumlah total error setelah BCH: {sum(totalerrorbch)}")
+
+# Catat waktu
+end4 = time.time()
+print(f"Waktu Proses BCH Code ALICE : {end4 - start4:.2f} detik")
+print("BCH CODE Berhasil")
+    

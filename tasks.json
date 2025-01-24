@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build hello",
+            "type": "shell",
+            "command": "gcc",  // Pastikan hanya 'gcc', tanpa path lengkap
+            "args": [
+                "-Wall",
+                "-Wextra",
+                "-g3",
+                "e:/PENS/Semester 7/Progress PA/codingan/Program/NIST-TestALICE128.c",
+                "-o",
+                "e:/PENS/Semester 7/Progress PA/codingan/Program/output/NIST-TestALICE128.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Generated task by Debugger."
+        }
+    ]
+}
