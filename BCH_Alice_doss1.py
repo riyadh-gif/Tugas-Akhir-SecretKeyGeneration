@@ -7,6 +7,7 @@ from math import floor
 from random import seed
 from xlwt import Workbook
 import csv
+import openpyxl
 
 #=====================================================================================================================
 #============================================BCH CODE=================================================================
@@ -21,19 +22,18 @@ errbch = []
 
 # Inisialisasi global untuk deleteblok
 deleteblok = 0  # Tambahkan inisialisasi global untuk deleteblok
+# Membaca file Excel untuk Alice, Bob, dan Charlie menggunakan openpyxl
+workbook = openpyxl.load_workbook(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Threshold_Alice.xlsx")
+worksheet = workbook.active  # Use the active sheet (or specify by name if necessary)
+workbook1 = openpyxl.load_workbook(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Threshold_Bob.xlsx")
+worksheet1 = workbook1.active  # Use the active sheet (or specify by name)
+workbook2 = openpyxl.load_workbook(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Threshold_Charlie.xlsx")
+worksheet2 = workbook2.active  # Use the active sheet (or specify by name)
 
-# Membaca file Excel untuk Alice, Bob, dan Charlie
-workbook = xlrd.open_workbook(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Threshold_Alice.xls", on_demand=True)
-worksheet = workbook.sheet_by_name("Sheet1")
-workbook1 = xlrd.open_workbook(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Threshold_Bob.xls", on_demand=True)
-worksheet1 = workbook1.sheet_by_name("Sheet1")
-workbook2 = xlrd.open_workbook(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Threshold_Charlie.xls", on_demand=True)  # Tambahkan Charlie
-worksheet2 = workbook2.sheet_by_name("Sheet1")
-
-# Mengambil data dari Alice, Bob, dan Charlie
-a = [worksheet.cell_value(row, 0) for row in range(1, worksheet.nrows)]
-b = [worksheet1.cell_value(row, 0) for row in range(1, worksheet1.nrows)]
-c = [worksheet2.cell_value(row, 0) for row in range(1, worksheet2.nrows)]  # Data Charlie
+# Membaca data dari masing-masing sheet (asumsikan data dimulai dari baris kedua)
+a = [worksheet.cell(row=row, column=1).value for row in range(2, worksheet.max_row + 1)]
+b = [worksheet1.cell(row=row, column=1).value for row in range(2, worksheet1.max_row + 1)]
+c = [worksheet2.cell(row=row, column=1).value for row in range(2, worksheet2.max_row + 1)]
 
 # KDR Sebelum BCH Error Correction
 errkuan_ab = [i+1 for i in range(len(a)) if a[i] != b[i]]
