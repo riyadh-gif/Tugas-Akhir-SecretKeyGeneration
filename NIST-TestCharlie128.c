@@ -83,7 +83,7 @@ main()
 	int caca[12800],epsilonlen[12800],maks,abc,isieps,totali,c,d,jj,indeks[10];
     //                                   file, delimiter, first_line_is_header?
 
-    CsvParser *csvparser = CsvParser_new("files\\univhash_Alice_doss1.csv", ",", 0);
+    CsvParser *csvparser = CsvParser_new("files\\univhash_charlie_doss3.csv", ",", 0);
     CsvRow *row;
     i=0;
     while ((row = CsvParser_getRow(csvparser)) ) {
@@ -517,7 +517,7 @@ main()
 		for ( c = 0 ; c < abc ; c++ )
 		    printf("Prioritas ke %d yaitu Kunci ke %d\n", c+1,indeks[c]+1);
 
-		char str[]="files\\sudahujinist_Alice";
+		char str[]="files\\sudujinist_charlie";
 		create_marks_csv(str,indeks,abc);
 		getchar();
 	}

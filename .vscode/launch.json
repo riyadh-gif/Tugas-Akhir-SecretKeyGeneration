@@ -1,7 +1,6 @@
 {
   "version": "0.2.0",
   "configurations": [
-    
     {
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
@@ -9,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "e:/PENS/Semester 7/Progress PA/codingan/Program",
-      "program": "e:/PENS/Semester 7/Progress PA/codingan/Program/build/Debug/outDebug",
+      "cwd": "e:/PENS/Semester 8/Final TA/Code/Ruang Eksperimen/experimen 1/Program_1",
+      "program": "e:/PENS/Semester 8/Final TA/Code/Ruang Eksperimen/experimen 1/Program_1/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

@@ -24,35 +24,35 @@ try:
     print(f"Available sheets in Hasil_BCH_DOSS1.xls: {workbook.sheet_names()}")  # Debugging line
     worksheet = workbook.sheet_by_name("BCH Alice")
 
-    # Open Bob's workbook and verify sheet existence
-    workbook1_path = r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Hasil_BCH_Bob.xls"
+    # Open charlie's workbook and verify sheet existence
+    workbook1_path = r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Hasil_BCH_charlie.xls"
     if not os.path.exists(workbook1_path):
         raise FileNotFoundError(f"Workbook not found: {workbook1_path}")
 
     workbook1 = xlrd.open_workbook(workbook1_path, on_demand=True)  # This line was missing
-    print(f"Available sheets in Hasil_BCH_Bob_doss2.xls: {workbook1.sheet_names()}")  # Debugging line
-    worksheet1 = workbook1.sheet_by_name("BCH Bob")  # Accessing the correct sheet from workbook1
+    print(f"Available sheets in Hasil_BCH_charlie_doss3.xls: {workbook1.sheet_names()}")  # Debugging line
+    worksheet1 = workbook1.sheet_by_name("BCH Charlie")  # Accessing the correct sheet from workbook1
     
 except (ValueError, xlrd.XLRDError, FileNotFoundError) as e:
     print(f"Error: {e}")
     exit()
 
-# Get header row from Bob's sheet (just to verify the structure)
-first_row_bob = [worksheet1.cell_value(0, col) for col in range(worksheet1.ncols)]
+# Get header row from charlie's sheet (just to verify the structure)
+first_row_charlie = [worksheet1.cell_value(0, col) for col in range(worksheet1.ncols)]
 
-# Extract Bob's data (only the first column)
-bob = [worksheet1.cell_value(row, 0) for row in range(1, worksheet1.nrows)]
+# Extract charlie's data (only the first column)
+charlie = [worksheet1.cell_value(row, 0) for row in range(1, worksheet1.nrows)]
 
-print(f"Panjang Input UnivHASH BOB: {len(bob)}")
+print(f"Panjang Input UnivHASH charlie: {len(charlie)}")
 
-# Adjust the length of Bob's data to be a multiple of 128
-jumlahkeyb = math.floor(len(bob) / 128)
+# Adjust the length of charlie's data to be a multiple of 128
+jumlahkeyb = math.floor(len(charlie) / 128)
 jumlahkey = jumlahkeyb
 
 ukuranhash = 128
 # Remove any excess data that doesn't fit into a full 128-bit block
-lenbob = len(bob) - (len(bob) % 128)
-bob = bob[:lenbob]
+lencharlie = len(charlie) - (len(charlie) % 128)
+charlie = charlie[:lencharlie]
 
 # Load the Hash Table from CSV
 Hashtab = []
@@ -62,11 +62,11 @@ with open('Hashtable128.csv', newline='') as f:
 
 Hashtable = np.array(Hashtab, dtype=int)
 
-# Generate keys for each block of data for Bob
-key1_bob = []
+# Generate keys for each block of data for charlie
+key1_charlie = []
 for i in range(jumlahkey):
     mat1 = []
-    aaa = bob[i * ukuranhash: (i + 1) * ukuranhash]
+    aaa = charlie[i * ukuranhash: (i + 1) * ukuranhash]
     
     print(f"Key-{i+1}: Panjang data adalah {len(aaa)} dan ukuran HashTable yaitu {ukuranhash} x {len(aaa)}")
     
@@ -76,31 +76,31 @@ for i in range(jumlahkey):
         row = total % 2  # Apply mod 2 to each sum
         mat1.append(int(row))
     
-    key1_bob.append(mat1)
-    print(f"Jumlah KEY BOB Sekarang: {len(key1_bob)}")
+    key1_charlie.append(mat1)
+    print(f"Jumlah KEY charlie Sekarang: {len(key1_charlie)}")
 
-# Flatten all keys into a single list for Bob
-bx = [key1_bob[i][j] for i in range(jumlahkey) for j in range(ukuranhash)]
+# Flatten all keys into a single list for charlie
+bx = [key1_charlie[i][j] for i in range(jumlahkey) for j in range(ukuranhash)]
 
 # Prepare data for writing to CSV and Excel
-univ2_bob = np.array(bx).reshape(len(bx), 1)
+univ2_charlie = np.array(bx).reshape(len(bx), 1)
 
-# Save output to CSV for Bob
-with open(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\univhash_Bob_doss2.csv", "w", newline="") as fp:
-    csv.writer(fp, delimiter=",").writerows(univ2_bob)
+# Save output to CSV for charlie
+with open(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\univhash_charlie_doss3.csv", "w", newline="") as fp:
+    csv.writer(fp, delimiter=",").writerows(univ2_charlie)
 
-# Save output to Excel for Bob
-book_bob = Workbook()
-sheet1_bob = book_bob.add_sheet("UnivHASH")
-sheet1_bob.write(0, 0, "Bob")
+# Save output to Excel for charlie
+book_charlie = Workbook()
+sheet1_charlie = book_charlie.add_sheet("UnivHASH")
+sheet1_charlie.write(0, 0, "charlie")
 for i in range(1, len(bx) + 1):
-    sheet1_bob.write(i, 0, int(bx[i - 1]))
-book_bob.save(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\univhash_Bob_doss2.xls")
+    sheet1_charlie.write(i, 0, int(bx[i - 1]))
+book_charlie.save(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\univhash_charlie_doss3.xls")
 
 # End timing
 end5 = time.time()
 
-# Print the results for Bob
-print(f"UNIVHASH Panjang bit hasil Universal Hash bob = {len(bx)}")
+# Print the results for charlie
+print(f"UNIVHASH Panjang bit hasil Universal Hash charlie = {len(bx)}")
 print(f"UNIVHASH Jumlah hasil key yang dibangkitkan = {jumlahkey}")
 print(f"Waktu Proses HASHING: {end5 - start5:.4f} seconds")

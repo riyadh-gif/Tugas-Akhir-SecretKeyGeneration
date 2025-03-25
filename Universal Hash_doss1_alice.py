@@ -16,31 +16,22 @@ start5 = time.time()
 # Open workbooks and check sheet names
 try:
     # Open Alice's workbook and verify sheet existence
-    workbook_path = "E:\\PENS\\Semester 7\\Progress PA\\codingan\\Program\\Hasil_BCH_DOSS1.xls"
+    workbook_path = r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Hasil_BCH_Alice.xls"
     if not os.path.exists(workbook_path):
         raise FileNotFoundError(f"Workbook not found: {workbook_path}")
     
     workbook = xlrd.open_workbook(workbook_path, on_demand=True)
     print(f"Available sheets in Hasil_BCH_DOSS1.xls: {workbook.sheet_names()}")  # Debugging line
-
-    if "HasilBCHalice" not in workbook.sheet_names():
-        print(f"Warning: Sheet 'HasilBCHalice' not found in Hasil_BCH_DOSS1.xls. Using 'Sheet1' instead.")
-        worksheet = workbook.sheet_by_name("Sheet1")  # Change this if 'Sheet1' is the correct one
-    else:
-        worksheet = workbook.sheet_by_name("HasilBCHalice")
+    worksheet = workbook.sheet_by_name("BCH Alice")
 
     # Open Bob's workbook and verify sheet existence
-    workbook1_path = "E:\\PENS\\Semester 7\\Progress PA\\codingan\\Program\\Hasil_BCH_Bob_doss2.xls"
+    workbook1_path = r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Hasil_BCH_Bob.xls"
     if not os.path.exists(workbook1_path):
         raise FileNotFoundError(f"Workbook not found: {workbook1_path}")
-    
-    workbook1 = xlrd.open_workbook(workbook1_path, on_demand=True)
+
+    workbook1 = xlrd.open_workbook(workbook1_path, on_demand=True)  # This line was missing
     print(f"Available sheets in Hasil_BCH_Bob_doss2.xls: {workbook1.sheet_names()}")  # Debugging line
-    
-    if "HasilBCHbob" not in workbook1.sheet_names():
-        raise ValueError("Sheet 'HasilBCHbob' not found in Hasil_BCH_Bob_doss2.xls")
-    
-    worksheet1 = workbook1.sheet_by_name("HasilBCHbob")
+    worksheet1 = workbook1.sheet_by_name("BCH Bob")  # Accessing the correct sheet from workbook1
     
 except (ValueError, xlrd.XLRDError, FileNotFoundError) as e:
     print(f"Error: {e}")
@@ -95,7 +86,7 @@ ax = [key1[i][j] for i in range(jumlahkey) for j in range(ukuranhash)]
 univ2 = np.array(ax).reshape(len(ax), 1)
 
 # Save output to CSV
-with open("univhash_Alice_doss1.csv", "w", newline="") as fp:
+with open(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\univhash_Alice_doss1.csv", "w", newline="") as fp:
     csv.writer(fp, delimiter=",").writerows(univ2)
 
 # Save output to Excel
@@ -104,7 +95,7 @@ sheet1 = book.add_sheet("UnivHASH")
 sheet1.write(0, 0, "Alice")
 for i in range(1, len(ax) + 1):
     sheet1.write(i, 0, int(ax[i - 1]))
-book.save("Universal_Hash_Alice_doss1.xls")
+book.save(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\univhash_Alice_doss1.xls")
 
 # End timing
 end5 = time.time()
