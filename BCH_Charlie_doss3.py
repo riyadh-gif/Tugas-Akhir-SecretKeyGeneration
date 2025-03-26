@@ -23,11 +23,11 @@ errbch = []
 # Inisialisasi global untuk deleteblok
 deleteblok = 0  # Tambahkan inisialisasi global untuk deleteblok
 
-workbook = openpyxl.load_workbook(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Threshold_Alice.xlsx")
+workbook = openpyxl.load_workbook(r"files\Threshold_Alice.xlsx")
 worksheet = workbook.active  # Use the active sheet (or specify by name if necessary)
-workbook1 = openpyxl.load_workbook(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Threshold_Bob.xlsx")
+workbook1 = openpyxl.load_workbook(r"files\Threshold_Bob.xlsx")
 worksheet1 = workbook1.active  # Use the active sheet (or specify by name)
-workbook2 = openpyxl.load_workbook(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Threshold_Charlie.xlsx")
+workbook2 = openpyxl.load_workbook(r"files\Threshold_Charlie.xlsx")
 worksheet2 = workbook2.active  # Use the active sheet (or specify by name)
 
 # Membaca data dari masing-masing sheet (asumsikan data dimulai dari baris kedua)
@@ -221,6 +221,6 @@ for i, bit in enumerate(bitcharlie):
     sheet1.write(i + 1, 0, bit)
 
 # Menyimpan file XLS
-book.save(r'E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Hasil_BCH_Charlie.xls')
+book.save(r'files\Hasil_BCH_Charlie.xls')
 
 print("Data Charlie sukses disimpan dengan nama Hasil_BCH_Charlie.xls")

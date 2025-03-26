@@ -4,8 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Path file input dan output
-input_file = r'E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\DOSS.xlsx'
-output_file = r'E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\hasil_kalman.xlsx'
+input_file = r'files\DOSS.xlsx'
+output_file = r'files\hasil_kalman.xlsx'
 
 # Load data dengan openpyxl
 workbook = openpyxl.load_workbook(input_file)
@@ -69,20 +69,20 @@ print(f"Adaptive MSE DOSS2: {mse_doss2:.4f}")
 print(f"Adaptive MSE DOSS3: {mse_doss3:.4f}")
 
 # Fungsi plot hasil Kalman Filter
-def plot_kalman_results(original, kalman_filtered, label):
-    plt.figure(figsize=(12, 6))
-    plt.plot(original, label=f'Original {label}', linestyle='--', alpha=0.7)
-    plt.plot(kalman_filtered, label=f'Kalman Filtered {label}', linewidth=2)
-    plt.xlabel('Data Index')
-    plt.ylabel('DOSS (dBm)')
-    plt.legend()
-    plt.title(f'Kalman Filter pada {label}')
-    plt.grid(True)
-    plt.show()
+#def plot_kalman_results(original, kalman_filtered, label):
+#    plt.figure(figsize=(12, 6))
+#    plt.plot(original, label=f'Original {label}', linestyle='--', alpha=0.7)
+#    plt.plot(kalman_filtered, label=f'Kalman Filtered {label}', linewidth=2)
+#    plt.xlabel('Data Index')
+#    plt.ylabel('DOSS (dBm)')
+#    plt.legend()
+#    plt.title(f'Kalman Filter pada {label}')
+#    plt.grid(True)
+#    plt.show()
 
 # Plot hasil Kalman Filter
-plot_kalman_results(rss_doss1, kalman_doss1, 'DOSS1')
-plot_kalman_results(rss_doss2, kalman_doss2, 'DOSS2')
-plot_kalman_results(rss_doss3, kalman_doss3, 'DOSS3')
+#plot_kalman_results(rss_doss1, kalman_doss1, 'DOSS1')
+#plot_kalman_results(rss_doss2, kalman_doss2, 'DOSS2')
+#plot_kalman_results(rss_doss3, kalman_doss3, 'DOSS3')
 
 print(f"Hasil Adaptive Kalman Filter disimpan pada: {output_file}")

@@ -16,7 +16,7 @@ start5 = time.time()
 # Open workbooks and check sheet names
 try:
     # Open Alice's workbook and verify sheet existence
-    workbook_path = r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Hasil_BCH_Alice.xls"
+    workbook_path = r"files\Hasil_BCH_Alice.xls"
     if not os.path.exists(workbook_path):
         raise FileNotFoundError(f"Workbook not found: {workbook_path}")
     
@@ -25,7 +25,7 @@ try:
     worksheet = workbook.sheet_by_name("BCH Alice")
 
     # Open Bob's workbook and verify sheet existence
-    workbook1_path = r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Hasil_BCH_Bob.xls"
+    workbook1_path = r"files\Hasil_BCH_Bob.xls"
     if not os.path.exists(workbook1_path):
         raise FileNotFoundError(f"Workbook not found: {workbook1_path}")
 
@@ -86,7 +86,7 @@ ax = [key1[i][j] for i in range(jumlahkey) for j in range(ukuranhash)]
 univ2 = np.array(ax).reshape(len(ax), 1)
 
 # Save output to CSV
-with open(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\univhash_Alice_doss1.csv", "w", newline="") as fp:
+with open(r"files\univhash_Alice_doss1.csv", "w", newline="") as fp:
     csv.writer(fp, delimiter=",").writerows(univ2)
 
 # Save output to Excel
@@ -95,7 +95,7 @@ sheet1 = book.add_sheet("UnivHASH")
 sheet1.write(0, 0, "Alice")
 for i in range(1, len(ax) + 1):
     sheet1.write(i, 0, int(ax[i - 1]))
-book.save(r"E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\univhash_Alice_doss1.xls")
+book.save(r"files\univhash_Alice_doss1.xls")
 
 # End timing
 end5 = time.time()

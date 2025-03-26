@@ -4,7 +4,7 @@ import scipy.stats as stats
 import matplotlib.pyplot as plt
 
 # Load data hasil Kalman Filter dari Excel
-file_path = r'E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\hasil_kalman.xlsx'
+file_path = r'files\hasil_kalman.xlsx'
 df = pd.read_excel(file_path, sheet_name='Sheet1')
 
 # Ambil data kolom DOSS1, DOSS2, dan DOSS3
@@ -104,7 +104,7 @@ formatted_df_vertical = pd.DataFrame({
     'Binary_DOSS2': format_binary_as_vertical(binary_doss2_final),
     'Binary_DOSS3': format_binary_as_vertical(binary_doss3_final)
 })
-formatted_df_vertical.to_excel(r'E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Final_RTQ_Binary_Vertical.xlsx', index=False, engine='openpyxl')
+formatted_df_vertical.to_excel(r'files\Final_RTQ_Binary_Vertical.xlsx', index=False, engine='openpyxl')
 
 print('Hasil biner dalam format vertikal disimpan di Final_RTQ_Binary_Vertical.xlsx')
 
@@ -114,11 +114,11 @@ formatted_df_horizontal = pd.DataFrame({
     'Binary_DOSS2': binary_doss2_final,
     'Binary_DOSS3': binary_doss3_final
 })
-formatted_df_horizontal.to_excel(r'E:\PENS\Semester 8\Final TA\Code\Ruang Eksperimen\experimen 1\Program_1\files\Final_RTQ_Binary_Horizontal.xlsx', index=False, engine='openpyxl')
+formatted_df_horizontal.to_excel(r'files\Final_RTQ_Binary_Horizontal.xlsx', index=False, engine='openpyxl')
 
 print('Hasil biner dalam format horizontal disimpan di Final_RTQ_Binary_Horizontal.xlsx')
 
 # Plot hasil untuk verifikasi
-plot_quantization(doss1, quantized_doss1, thresholds_doss1, 'DOSS1')
-plot_quantization(doss2, quantized_doss2, thresholds_doss2, 'DOSS2')
-plot_quantization(doss3, quantized_doss3, thresholds_doss3, 'DOSS3')
+#plot_quantization(doss1, quantized_doss1, thresholds_doss1, 'DOSS1')
+#plot_quantization(doss2, quantized_doss2, thresholds_doss2, 'DOSS2')
+#plot_quantization(doss3, quantized_doss3, thresholds_doss3, 'DOSS3')
