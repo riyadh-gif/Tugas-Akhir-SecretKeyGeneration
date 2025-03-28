@@ -155,55 +155,73 @@ print('Waktu Proses Uji NIST : ', endnist - startnist)
 print('\n\n====================== SHA-128 ========================')
 print('============================================================\n')
 
-start6=time.time()
+start6 = time.time()
 dataalice = []
 hex1 = []
 abc1 = []
-for j in range(len(indek)):
+
+# Check the length of 'key1[0]' to ensure valid indexing
+key1_length = len(key1[0])
+print(f"Length of key1[0]: {key1_length}")
+
+# Ensure 'indek' has valid values and does not exceed the range of 'key1[0]'
+valid_indeks = [idx for idx in indek if idx < key1_length]
+
+# Initialize hex1 list by iterating over valid indices
+for j in range(len(valid_indeks)):
     hash1 = [0] * 128
     for i in range(128):
-        # print(key1[0][indek[j]][i])
-        hash1[i] = key1[0][indek[j]]
+        # Access the key using a valid index
+        hash1[i] = key1[0][valid_indeks[j]]
 
+    # Convert the list of 0s and 1s to a string for hashing
     data1 = "".join(str(e) for e in hash1)
+
+    # Hash the string using SHA-1
     someText1 = data1.encode("ascii")
     b1 = hashlib.sha1(someText1).hexdigest()
     hex1.append(b1)
 
-    print('Hasil hash Alice Kunci-{} = {}'.format(indek[j]+1, hex1[j]))
+    print(f'Hasil hash Alice Kunci-{valid_indeks[j] + 1} = {hex1[j]}')
 
+# Save the hashes to an Excel file
 book = Workbook()
 sheet1 = book.add_sheet('sha128')
 sheet1.write(0, 0, 'Alice')
-for i in range(1, len(hex1)+1):
-    sheet1.write(i, 0, hex1[i-1])
+
+for i in range(1, len(hex1) + 1):
+    sheet1.write(i, 0, hex1[i - 1])
+
+# Save the Excel file
 book.save('SHA128ALICE_I10_7030_97.xls')
 book.save(TemporaryFile())
 
-# Di nyalain saat di rasbery
-# socketsend('SHA128ALICE.xls') 
-# socketrecv()
-
+# Read the saved Excel file to verify the hashes
 workbook = xlrd.open_workbook('SHA128ALICE_I10_7030_97.xls', on_demand=True)
 worksheet = workbook.sheet_by_index(0)
-first_row = []  # Header
+
+# Read the header (optional)
+first_row = []
 for col in range(0, worksheet.ncols):
     first_row.append(worksheet.cell_value(0, col))
-    # tronsform the workbook to a list of dictionnaries
+
+# Read the hashes from the saved Excel file
 hex2 = []
 for row in range(1, worksheet.nrows):
-    elm = {}
-    for col in range(1):
-        elm = worksheet.cell_value(row, col)
+    elm = worksheet.cell_value(row, 0)
     hex2.append(elm)
 
-for j in range(len(indek)):
-    if(hex1[j] == hex2[j]):
-        print('Hash Value-%d valid, proses enkripsi dapat dilakukan' % (j+1))
+# Verify if the hashes match
+for j in range(len(valid_indeks)):
+    if hex1[j] == hex2[j]:
+        print(f'Hash Value-{valid_indeks[j] + 1} valid, proses enkripsi dapat dilakukan')
     else:
-        print('Hash Value-%d not valid' % (j+1))
-end6=time.time()
+        print(f'Hash Value-{valid_indeks[j] + 1} not valid')
+
+end6 = time.time()
 print('Waktu Proses HASHING : ', end6 - start6)
+
+
 # =========================================================================
 # ================================= AES-128 ===============================
 print('\n\n===========~~~~~~~~~~~== AES ~~~~~~~~~~~~~~==============')
